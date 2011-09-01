@@ -1,0 +1,75 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <chapter id="chapter1">
+    <title>Chapter 1 title</title>
+    <para>Bulleted list:</para>
+    <itemizedlist>
+      <listitem>
+        <para>Item 1</para>
+      </listitem>
+      <listitem>
+        <para>Item 2</para>
+      </listitem>
+      <listitem>
+        <para>Item 3</para>
+      </listitem>
+      <listitem>
+        <para>Item 4</para>
+      </listitem>
+    </itemizedlist>
+    <!-- test numbered list inside para on same line! -->
+    <para>Numbered list: <orderedlist>
+      <listitem>
+        <para>Item 1</para>
+      </listitem>
+      <listitem>
+        <para>Item 2</para>
+      </listitem>
+      <listitem>
+        <para>Item 3</para>
+      </listitem>
+      <listitem>
+        <para>Item 4</para>
+      </listitem>
+    </orderedlist>
+    </para>
+    <para>Nested lists:</para>
+    <itemizedlist>
+      <listitem>
+        <para>Item 1</para>
+        <itemizedlist>
+          <listitem>
+            <para>Item 11</para>
+          </listitem>
+          <listitem>
+            <para>Item 12</para>
+          </listitem>
+          <listitem>
+            <para>Item 13</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>Item 2</para>
+        <orderedlist>
+          <listitem>
+            <para>Item 21</para>
+          </listitem>
+          <listitem>
+            <para>Item 22</para>
+          </listitem>
+          <listitem>
+            <para>Item 23</para>
+          </listitem>
+        </orderedlist>
+      </listitem>
+      <listitem>
+        <para>Item 3</para>
+      </listitem>
+      <listitem>
+        <para>Item 4</para>
+      </listitem>
+    </itemizedlist>
+  </chapter>
+</book>

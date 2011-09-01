@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <chapter id="chapter1">
+    <title>Chapter 1 title</title>
+    <para>
+      some 1 link <ulink url="http://www.jboss.org" /> go
+    </para>
+        <para>
+      some 2 link <ulink url="http://www.jboss.org">link <emphasis role="strong">strong</emphasis> text</ulink> go
+    </para>
+  </chapter>
+</book>

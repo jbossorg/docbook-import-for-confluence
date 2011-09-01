@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<book  xmlns="http://docbook.org/ns/docbook"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd"
+        version="5.0">
+<chapter id="chapter1">
+  <title>Chapter 1 title</title>
+  <para>
+    test with <emphasis role="strong">
+    bold
+    </emphasis> and <bold>bold2</bold> text  
+    at the end
+  </para>
+  <para>
+    test with <emphasis role="italics">italics</emphasis> and <italics>italics2</italics> and <emphasis>italics3</emphasis> text
+  </para>
+  <para>
+    test with <emphasis role="underline">underline</emphasis> and <underline>underline2</underline> text
+  </para>
+  <para>
+    test with <emphasis role="strikethrough">striked</emphasis> text
+  </para>
+  <para>
+    test with <superscript>super 
+    script</superscript> and <subscript>sub 
+    script</subscript> text
+  </para>
+  <para>
+    test with <code>code monospaced</code> text
+  </para>
+  <para>
+    test with <filename>code <guilabel>filename</guilabel> monospaced</filename> text
+  </para>
+  <para>
+    test with <quote>quoted</quote> text
+  </para>
+  <para>
+    test with <blockquote>block quoted</blockquote> text
+  </para>
+  <para>
+    test with <screen>text in *screen* node</screen> text
+  </para>
+  <formalpara>
+    <title>formalpara title</title>
+    <para>formalpara content</para>
+  </formalpara>
+</chapter>
+</book>

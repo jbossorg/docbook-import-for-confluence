@@ -1,0 +1,35 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <chapter id="chapter1">
+    <title>Chapter 1 title</title>
+
+    <variablelist>
+      <title>Varlist title</title>
+      <varlistentry>
+        <term>
+          <filename>publican.cfg</filename>
+        </term>
+        <listitem>
+          <para>
+            Ensure you <varname>BRAND</varname> defined.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          All XML files in the <filename>en-US</filename> directory
+        </term>
+        <listitem>
+          <para>
+            Ensure you <varname>DOCTYPE</varname> defined.
+          </para>
+          <para>
+            para 2 text
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </chapter>
+</book>

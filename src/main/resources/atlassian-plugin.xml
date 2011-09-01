@@ -1,0 +1,47 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}" />
+    <application-version min="3.4" />
+    <bundle-instructions>
+      <Export-Package>org.jboss.confluence.plugin.docbook_tools.docbookimport</Export-Package>
+    </bundle-instructions>
+  </plugin-info>
+  
+  <resource type="i18n" name="plugin" location="org.jboss.confluence.plugin.docbook_tools.docbookimport.plugin_messages"/>
+  
+  <resource type="download" name="images/" location="images/"/>
+    
+  <web-item key="docbook_tools.dimport" name="DocBook import Web Item" section="system.content.action/primary" weight="1003">
+        <description>This module provides the menu entry for the DocBook import.</description>
+        <label key="dimport.navlink" />
+        <link linkId="docbook_tools.dimport">/spaces/docbook_import/importConfigure.action?spaceKey=$helper.spaceKey&amp;pageId=$helper.page.id</link>
+        <icon height="16" width="16">
+            <link>/download/resources/${project.groupId}.${project.artifactId}/images/icon16.png</link>
+        </icon> 
+        <condition class="com.atlassian.confluence.plugin.descriptor.web.conditions.PagePermissionCondition">
+          <param name="permission">view</param>
+        </condition>
+        <condition class="com.atlassian.confluence.plugin.descriptor.web.conditions.SpacePermissionCondition">
+          <param name="permission">export</param>
+        </condition>
+  </web-item>
+  
+  <xwork key="docbook_tools.import.actions" name="JBoss DocBook Import Web Actions">
+        <description>This module provides the UI to run DocBook import.</description>
+        <package name="docbook_tools.import.actions" extends="default" namespace="/spaces/docbook_import">
+            <default-interceptor-ref name="defaultStack"/>
+            <action name="importConfigure" class="org.jboss.confluence.plugin.docbook_tools.web.DocbookImportAction" method="configure">
+                <result name="success" type="velocity">/templates/importConfigure.vm</result>
+            </action>
+            <action name="importPerform" class="org.jboss.confluence.plugin.docbook_tools.web.DocbookImportAction" method="perform">
+                <result name="success" type="velocity">/templates/importConfigure.vm</result>
+                <result name="error" type="velocity">/templates/importConfigure.vm</result>
+            </action>
+        </package>
+  </xwork>
+  
+  
+</atlassian-plugin>

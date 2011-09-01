@@ -1,0 +1,23 @@
+"DocBook Import for Confluence" plugin changelog
+==============================================================
+
+1.1.1
+- ORG-1093 - improved handling of EOL - all EOL removed inside text parts
+- ORG-1094 - less escape characters in imported wiki markup
+
+1.1.0
+- added support for DocBook 5.0 declared using xml namespace
+- patched images import if one page used same image more times
+- added validation for page title existence 
+
+1.0.2
+- patched error in bad xml file preproccessing causing xml parsing problems
+- improved error messages from xml parsing to better tell cause
+- <mediaobject> without <figure> is now imported as wiki image too, images are not thumbnails now in wiki
+
+1.0.1
+- ORG-965 - 'DocBook import' utility implementation improved based on Jared testing
+
+1.0.0
+- ORG-965 - 'DocBook import' utility implemented
+

@@ -1,0 +1,99 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <chapter id="chapter1">
+    <title>Chapter 1 title</title>
+    
+    <informaltable>
+      <tgroup cols="4">
+        <thead>
+          <row>
+            <entry>
+              <para>Column 1 header</para>
+            </entry>
+            <entry>
+              <para>
+                Column 2 header
+              </para>
+            </entry>
+            <entry>
+              <para>
+                Column 3 header
+              </para>
+            </entry>
+            <entry>
+              <para>
+                Column 4 header
+              </para>
+            </entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>
+              <para>
+                Read
+              </para>
+            </entry>
+            <entry>
+              <para>
+                X
+              </para>
+            </entry>
+            <entry>
+              <para>
+                X
+              </para>
+            </entry>
+            <entry>
+              <para>
+                X
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>
+                Write
+              </para>
+            </entry>
+            <entry>
+              <para>
+                <emphasis role="strong">Bold text</emphasis>
+              </para>
+            </entry>
+            <entry>
+              <para>
+                <emphasis role="italics">Italic text</emphasis>
+              </para>
+            </entry>
+            <entry>
+              <para>
+                X
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>
+                Export
+              </para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+            <entry>
+              <para>
+                X
+              </para>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+    
+  </chapter>
+</book>

@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+<chapter id="chapter1">
+  <title>Chapter 1 title</title>
+  <programlisting>
+    test program *
+    listing 1
+  </programlisting>
+  <programlisting language="xml">
+    test program *
+    listing 2
+  </programlisting>
+  <example id="exam-JBoss_Documentation_Guide-Code_Examples-programlisting_example">
+    <title>test program listing 3 title</title>
+    <programlisting language="java">
+      test program *
+      listing 3
+    </programlisting>
+    <para>Other text in para <bold>inside</bold> example</para>
+  </example>
+  
+  <example id="exam-JBoss_Documentation_Guide-Code_Examples-programlisting_example">
+    <title>test program listing 4 title</title>
+    <programlisting>
+      test program *
+      listing 4
+      test with <emphasis role="strong">bold</emphasis> and <bold>bold2</bold> text in programlisting
+   </programlisting>
+  </example>
+  
+</chapter>
+</book>

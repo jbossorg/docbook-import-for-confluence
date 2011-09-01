@@ -1,0 +1,74 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+  <chapter id="chapter1">
+    <title>Chapter 1 title</title>
+    
+    <table>
+      <title>Table title</title>
+      <tgroup cols="4">
+        <thead>
+          <row>
+            <entry>
+              Column 1 header
+            </entry>
+            <entry>
+              Column 2 header
+            </entry>
+            <entry>
+                Column 3 header
+            </entry>
+            <entry>
+                Column 4 header
+            </entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>
+                Read
+            </entry>
+            <entry>
+                X
+            </entry>
+            <entry>
+                X
+            </entry>
+            <entry>
+                X
+            </entry>
+          </row>
+          <row>
+            <entry>
+                Write
+            </entry>
+            <entry>
+                <emphasis role="strong">Bold text</emphasis>
+            </entry>
+            <entry>
+                <emphasis role="italics">Italic text</emphasis>
+            </entry>
+            <entry>
+                X
+            </entry>
+          </row>
+          <row>
+            <entry>
+                Export
+            </entry>
+            <entry>
+ 
+            </entry>
+            <entry>
+              <para> </para>
+            </entry>
+            <entry>
+                X
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+    
+  </chapter>
+</book>

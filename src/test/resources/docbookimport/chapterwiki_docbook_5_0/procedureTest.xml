@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<book  xmlns="http://docbook.org/ns/docbook"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd"
+        version="5.0">
+
+  <chapter id="chapter1">
+    <title>Chapter 1 title</title>
+
+    <procedure>
+      <title>procedure Title</title>
+      <step>
+        <title>Step 1 Title</title>
+        <para>Step one info 1</para>
+        <para>Step one info 2</para>
+        <formalpara>
+          <title>formalpara title</title>
+          <para>formalpara content</para>
+        </formalpara>
+      </step>
+      <step>
+        <title>Step 2 Title</title>
+        <para>Step two <bold>info</bold> 1</para>
+        <para>Step two <bold>info</bold> 2:</para>
+        <orderedlist>
+          <listitem>
+            <para>Sub-step one.</para>
+          </listitem>
+          <listitem>
+            <para>Sub-step two, etc.</para>
+          </listitem>
+        </orderedlist>
+      </step>
+    </procedure>
+
+  </chapter>
+</book>

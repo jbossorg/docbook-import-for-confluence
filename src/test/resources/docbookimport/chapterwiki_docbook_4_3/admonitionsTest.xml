@@ -1,0 +1,42 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN" "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<book>
+<chapter id="chapter1">
+  <title>Chapter 1 title</title>
+  <warning>
+    <para>test warning no title</para>
+  </warning>
+  <warning>
+    <title>test warning title</title>
+    <para>test warning with title</para>
+  </warning>
+ 
+  <important>
+    <para>test important no title</para>
+  </important>
+  <important>
+    <title>test important title</title>
+    <para>test important with title</para>
+  </important> 
+  <important>
+    test important without para
+  </important>  
+
+  <note>
+    <para>test note no title</para>
+  </note>
+  <note>
+    <title>test note title</title>
+    <para>test note with title</para>
+  </note>  
+
+  <tip>
+    <para>test tip no title</para>
+  </tip>
+  <tip>
+    <title>test tip title</title>
+    <para>test tip with title</para>
+  </tip>  
+
+</chapter>
+</book>
