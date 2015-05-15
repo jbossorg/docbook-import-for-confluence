@@ -74,6 +74,13 @@ public class SAXErrorHandler implements ErrorHandler {
     this.errorLog.append(" due '");
     this.errorLog.append(exception.getMessage());
     this.errorLog.append("'");
+    Throwable e = exception.getCause();
+    while (e != null) {
+      this.errorLog.append(" due '");
+      this.errorLog.append(e.getMessage());
+      this.errorLog.append("'");
+      e = e.getCause();
+    }
   }
 
 }

@@ -20,6 +20,7 @@
  */
 package org.jboss.confluence.plugin.docbook_tools.docbookimport;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -109,6 +110,7 @@ public class JDGEntityResolver implements EntityResolver {
         is.setSystemId(systemId);
         return is;
       }
+
       if (systemId.toLowerCase().startsWith("http://")) {
 
         byte[] res_is = null;
@@ -159,11 +161,23 @@ public class JDGEntityResolver implements EntityResolver {
           cis.setSystemId(systemId);
           return cis;
         }
+      } else if (systemId.toLowerCase().startsWith("file:") && systemId.toLowerCase().endsWith(".ent")) {
+        log.debug("File for .ent resource required, go to check existence: " + systemId);
+        File f = new File(systemId.replaceFirst("file:", ""));
+        if (!f.exists()) {
+          File newf = new File(f.getParentFile().getParentFile(), f.getName());
+          log.debug("File for .ent resource do not exists (" + systemId + "), try to load it from parent folder: "
+              + newf.getAbsolutePath());
+          if (newf.exists()) {
+            return new InputSource(new BufferedInputStream(new FileInputStream(newf)));
+          }
+        }
       }
     }
 
     if (wrapped != null) {
-      return wrapped.resolveEntity(publicId, systemId);
+      InputSource is = wrapped.resolveEntity(publicId, systemId);
+      return is;
     }
     return null;
   }

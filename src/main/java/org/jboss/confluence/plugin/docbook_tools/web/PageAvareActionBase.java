@@ -24,6 +24,7 @@ import com.atlassian.confluence.core.ConfluenceActionSupport;
 import com.atlassian.confluence.pages.AbstractPage;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.actions.PageAware;
+import com.atlassian.confluence.security.SpacePermission;
 import com.atlassian.confluence.spaces.Space;
 import com.atlassian.confluence.spaces.actions.SpaceAware;
 
@@ -34,80 +35,80 @@ import com.atlassian.confluence.spaces.actions.SpaceAware;
  */
 public abstract class PageAvareActionBase extends ConfluenceActionSupport implements SpaceAware, PageAware {
 
-  /**
-   * Permission constant - 'Space - Export' permission.
-   * 
-   * @see #hasPermissionForSpace(String)
-   */
-  public static final String PERMISSION_EXPORTSPACE = "EXPORTSPACE";
+	/**
+	 * Permission constant - 'Space - Export' permission.
+	 * 
+	 * @see #hasPermissionForSpace(String)
+	 */
+	public static final String PERMISSION_EXPORTSPACE = SpacePermission.EXPORT_SPACE_PERMISSION;
 
-  /**
-   * Permission constant - 'Pages - Add' permission.
-   * 
-   * @see #hasPermissionForSpace(String)
-   */
-  public static final String PERMISSION_CREATEPAGE = "EDITSPACE";
+	/**
+	 * Permission constant - 'Pages - Add' permission.
+	 * 
+	 * @see #hasPermissionForSpace(String)
+	 */
+	public static final String PERMISSION_CREATEPAGE = SpacePermission.CREATEEDIT_PAGE_PERMISSION;
 
-  private Space space;
-  private Page page;
+	private Space space;
+	private Page page;
 
-  public PageAvareActionBase() {
-    super();
-  }
+	public PageAvareActionBase() {
+		super();
+	}
 
-  /**
-   * Check user permission for space.
-   * 
-   * @param permissionType identifier to check
-   * @return true if current user has given permission for current space
-   */
-  protected boolean hasPermissionForSpace(String permissionType) {
-    return spacePermissionManager.hasPermission(permissionType, space, getRemoteUser());
-  }
+	/**
+	 * Check user permission for space.
+	 * 
+	 * @param permissionType identifier to check
+	 * @return true if current user has given permission for current space
+	 */
+	protected boolean hasPermissionForSpace(String permissionType) {
+		return spacePermissionManager.hasPermission(permissionType, space, getRemoteUser());
+	}
 
-  @Override
-  public Page getPage() {
-    return page;
-  }
+	@Override
+	public Page getPage() {
+		return page;
+	}
 
-  @Override
-  public boolean isLatestVersionRequired() {
-    return true;
-  }
+	@Override
+	public boolean isLatestVersionRequired() {
+		return true;
+	}
 
-  @Override
-  public boolean isPageRequired() {
-    return true;
-  }
+	@Override
+	public boolean isPageRequired() {
+		return true;
+	}
 
-  @Override
-  public boolean isViewPermissionRequired() {
-    return true;
-  }
+	@Override
+	public boolean isViewPermissionRequired() {
+		return true;
+	}
 
-  @Override
-  public void setPage(AbstractPage page) {
-    if (!(page instanceof Page)) {
-      throw new IllegalArgumentException("We can only process Pages");
-    } else {
-      this.page = (Page) page;
-      return;
-    }
-  }
+	@Override
+	public void setPage(AbstractPage page) {
+		if (!(page instanceof Page)) {
+			throw new IllegalArgumentException("We can only process Pages");
+		} else {
+			this.page = (Page) page;
+			return;
+		}
+	}
 
-  @Override
-  public boolean isSpaceRequired() {
-    return true;
-  }
+	@Override
+	public boolean isSpaceRequired() {
+		return true;
+	}
 
-  @Override
-  public Space getSpace() {
-    return space;
-  }
+	@Override
+	public Space getSpace() {
+		return space;
+	}
 
-  @Override
-  public void setSpace(Space space) {
-    this.space = space;
-  }
+	@Override
+	public void setSpace(Space space) {
+		this.space = space;
+	}
 
 }

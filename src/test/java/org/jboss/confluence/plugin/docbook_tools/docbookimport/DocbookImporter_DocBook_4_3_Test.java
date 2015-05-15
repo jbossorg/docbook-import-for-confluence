@@ -22,6 +22,7 @@ package org.jboss.confluence.plugin.docbook_tools.docbookimport;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,29 +43,53 @@ public class DocbookImporter_DocBook_4_3_Test extends DocbookImporterTestBase {
 
   private static final DocBookVersion TESTED_DOCBOOK_VERSION = DocBookVersion.DOCBOOK_4_3;
 
+  /**
+   * Run this for local tests of parsing some documents. Good for parsing troubleshooting.
+   * 
+   * @param params
+   * @throws Exception
+   */
+  public static void main(String[] params) throws Exception {
+
+    // File srcdir = new File(
+    // "/home/velias/Temp/JaredConfluImport/Jboss_Enterprise_Application_Platform_6_Installation_Guide/en-US/");
+    // File inFile = new File(srcdir, "Jboss_Enterprise_Application_Platform_6_Installation_Guide.xml");
+
+    File srcdir = new File("/home/velias/Temp/JaredConfluImport//");
+    File inFile = new File(srcdir, "CommentTest.xml");
+
+    boolean allSectionLevels = true;
+
+    DocStructureItem ret = getDocStructureImpl(inFile, allSectionLevels);
+
+    System.out.println(ret);
+
+  }
+
   @Test
-  public void getDocStructure() throws Exception {
+  public void getDocStructure_onesectionlevel() throws Exception {
 
     File srcdir = prepareTestSourceDirectory("docbook-4.3-ok.zip");
-    // File srcdir = new File("/home/velias/Tmp/JDG/en-US/");
     try {
 
-      DocbookImporter tested = new DocbookImporter();
       File inFile = new File(srcdir, "Tree_Cache_Guide.xml");
-      // File inFile = new File(srcdir, "JBoss_Documentation_Guide.xml");
 
-      DocStructureItem ret = tested.getDocStructure(new FileInputStream(inFile), inFile.toURI().toString(),
-          TESTED_DOCBOOK_VERSION);
+      DocStructureItem ret = getDocStructureImpl(inFile, false);
       Assert.assertEquals("JBoss Cache Tree Cache", ret.getTitle());
       Assert.assertEquals(DocStructureItem.TYPE_BOOK, ret.getType());
       Assert.assertEquals(13, ret.getChilds().size());
 
       DocStructureItem chapter0 = assertChildDocStructureItem(ret, 0, "Introduction", "Introduction",
           DocStructureItem.TYPE_CHAPTER, 0, 0, 2);
-      assertChildDocStructureItem(chapter0, 0, "What is a TreeCache?", "Introduction-What_is_a_TreeCache",
-          DocStructureItem.TYPE_SECTION, 0, 0, 0);
-      assertChildDocStructureItem(chapter0, 1, "TreeCache Basics", "Introduction-TreeCache_Basics",
-          DocStructureItem.TYPE_SECTION, 0, 0, 0);
+      Assert.assertEquals(0, chapter0.getLabels().size());
+      DocStructureItem sect00 = assertChildDocStructureItem(chapter0, 0, "What is a TreeCache?",
+          "Introduction-What_is_a_TreeCache", DocStructureItem.TYPE_SECTION, 0, 0, 0);
+      Assert.assertEquals(1, sect00.getLabels().size());
+      Assert.assertTrue(sect00.getLabels().contains("TID_223"));
+      DocStructureItem sect01 = assertChildDocStructureItem(chapter0, 1, "TreeCache Basics",
+          "Introduction-TreeCache_Basics", DocStructureItem.TYPE_SECTION, 0, 0, 0);
+      Assert.assertEquals(1, sect01.getLabels().size());
+      Assert.assertTrue(sect01.getLabels().contains("TID_344"));
 
       assertChildDocStructureItem(ret, 1, "Architecture", "Architecture", DocStructureItem.TYPE_CHAPTER, 1, 0, 0);
 
@@ -82,10 +107,74 @@ public class DocbookImporter_DocBook_4_3_Test extends DocbookImporterTestBase {
       assertChildDocStructureItem(ret, 12, "Running JBoss Cache within JBoss Application Server",
           "Running_JBoss_Cache_within_JBoss_Application_Server", DocStructureItem.TYPE_APPENDIX, 0, 0, 1);
 
-      // System.out.println(ret);
     } finally {
       FileUtils.deleteDirectoryRecursively(srcdir);
     }
+  }
+
+  @SuppressWarnings("unused")
+  @Test
+  public void getDocStructure_allsectionlevel() throws Exception {
+
+    File srcdir = prepareTestSourceDirectory("docbook-4.3-ok.zip");
+    try {
+
+      File inFile = new File(srcdir, "Tree_Cache_Guide.xml");
+
+      DocStructureItem ret = getDocStructureImpl(inFile, true);
+      Assert.assertEquals("JBoss Cache Tree Cache", ret.getTitle());
+      Assert.assertEquals(DocStructureItem.TYPE_BOOK, ret.getType());
+      Assert.assertEquals(13, ret.getChilds().size());
+
+      DocStructureItem chapter0 = assertChildDocStructureItem(ret, 0, "Introduction", "Introduction",
+          DocStructureItem.TYPE_CHAPTER, 0, 0, 2);
+      Assert.assertEquals(0, chapter0.getLabels().size());
+      DocStructureItem sect00 = assertChildDocStructureItem(chapter0, 0, "What is a TreeCache?",
+          "Introduction-What_is_a_TreeCache", DocStructureItem.TYPE_SECTION, 0, 0, 0);
+      Assert.assertEquals(1, sect00.getLabels().size());
+      Assert.assertTrue(sect00.getLabels().contains("TID_223"));
+      DocStructureItem sect01 = assertChildDocStructureItem(chapter0, 1, "TreeCache Basics",
+          "Introduction-TreeCache_Basics", DocStructureItem.TYPE_SECTION, 0, 0, 0);
+      Assert.assertEquals(1, sect01.getLabels().size());
+      Assert.assertTrue(sect01.getLabels().contains("TID_344"));
+
+      assertChildDocStructureItem(ret, 1, "Architecture", "Architecture", DocStructureItem.TYPE_CHAPTER, 1, 0, 0);
+
+      assertChildDocStructureItem(ret, 2, "Basic API", "Basic_API", DocStructureItem.TYPE_CHAPTER, 1, 0, 0);
+
+      DocStructureItem chapter3 = assertChildDocStructureItem(ret, 3, "Clustered Caches", "Clustered_Caches",
+          DocStructureItem.TYPE_CHAPTER, 0, 0, 3);
+      DocStructureItem sect30 = assertChildDocStructureItem(chapter3, 0, "Local Cache", "Clustered_Caches-Local_Cache",
+          DocStructureItem.TYPE_SECTION, 0, 0, 0);
+      Assert.assertEquals(0, sect30.getLabels().size());
+      DocStructureItem sect31 = assertChildDocStructureItem(chapter3, 1, "Clustered Cache - Using Replication",
+          "Clustered_Caches-Clustered_Cache___Using_Replication", DocStructureItem.TYPE_SECTION, 0, 0, 2);
+      DocStructureItem sect310 = assertChildDocStructureItem(sect31, 0, "Replicated Caches and Transactions",
+          "Clustered_Cache___Using_Replication-Replicated_Caches_and_Transactions", DocStructureItem.TYPE_SECTION, 0,
+          0, 2);
+      DocStructureItem sect311 = assertChildDocStructureItem(sect31, 1, "Buddy Replication",
+          "Clustered_Cache___Using_Replication-Buddy_Replication", DocStructureItem.TYPE_SECTION, 0, 0, 5);
+      // test some subsection with local referencer
+      DocStructureItem sect3113 = assertChildDocStructureItem(sect311, 3, "Implementation",
+          "Buddy_Replication-Implementation", DocStructureItem.TYPE_SECTION, 1, 0, 0);
+
+      DocStructureItem sect32 = assertChildDocStructureItem(chapter3, 2, "Clustered Cache - Using Invalidation",
+          "Clustered_Caches-Clustered_Cache___Using_Invalidation", DocStructureItem.TYPE_SECTION, 0, 0, 0);
+
+      assertChildDocStructureItem(ret, 12, "Running JBoss Cache within JBoss Application Server",
+          "Running_JBoss_Cache_within_JBoss_Application_Server", DocStructureItem.TYPE_APPENDIX, 0, 0, 1);
+
+    } finally {
+      FileUtils.deleteDirectoryRecursively(srcdir);
+    }
+  }
+
+  private static DocStructureItem getDocStructureImpl(File inFile, boolean allSectionLevels) throws Exception,
+      FileNotFoundException {
+    DocbookImporter tested = new DocbookImporter();
+    DocStructureItem ret = tested.getDocStructure(new FileInputStream(inFile), inFile.toURI().toString(),
+        TESTED_DOCBOOK_VERSION, allSectionLevels);
+    return ret;
   }
 
   @Test
@@ -115,7 +204,7 @@ public class DocbookImporter_DocBook_4_3_Test extends DocbookImporterTestBase {
 
       File inFile = new File(srcdir, "Tree_Cache_Guide.xml");
       DocStructureItem docToImport = tested.getDocStructure(new FileInputStream(inFile), inFile.toURI().toString(),
-          TESTED_DOCBOOK_VERSION);
+          TESTED_DOCBOOK_VERSION, false);
 
       List<String> messages = new ArrayList<String>();
       tested.validateImageFilesExists(docToImport, srcdir, messages);
@@ -124,7 +213,7 @@ public class DocbookImporter_DocBook_4_3_Test extends DocbookImporterTestBase {
 
       inFile = new File(srcdir2, "Tree_Cache_Guide.xml");
       docToImport = tested.getDocStructure(new FileInputStream(inFile), inFile.toURI().toString(),
-          TESTED_DOCBOOK_VERSION);
+          TESTED_DOCBOOK_VERSION, false);
 
       messages = new ArrayList<String>();
       tested.validateImageFilesExists(docToImport, srcdir2, messages);
@@ -445,7 +534,7 @@ public class DocbookImporter_DocBook_4_3_Test extends DocbookImporterTestBase {
       tested.normalizeAllDocBookXMLFilesContent(srcdir);
 
       DocStructureItem docToImport = tested.getDocStructure(new FileInputStream(inFile), inFile.toURI().toString(),
-          TESTED_DOCBOOK_VERSION);
+          TESTED_DOCBOOK_VERSION, false);
       log.debug(docToImport);
 
       completeParsingTestStruct(tested, docToImport, inFile);

@@ -57,24 +57,26 @@
     </node>
   </xsl:template>
   
-  <!-- print first level section in chapter titles and picture refs inside  -->
-  <xsl:template match="book/chapter/section">
-    <node>
+  <!-- print one or all levels (${1} replaced by /) section in chapter titles and picture refs inside  -->
+  <xsl:template match="book/chapter/${1}section">
+    <sectnode>
     <type><xsl:text>section</xsl:text></type>
     <title><xsl:value-of select="title" /></title>
     <id><xsl:value-of select="@id" /></id>
+    <label><xsl:value-of select="@remap" /></label>
     <xsl:apply-templates />
-    </node>
+    </sectnode>
   </xsl:template>
 
-  <!-- print first level section in appendix titles and picture refs inside  -->
-  <xsl:template match="book/appendix/section">
-    <node>
+  <!-- print one or all levels (${1} replaced by /) section in appendix titles and picture refs inside  -->
+  <xsl:template match="book/appendix/${1}section">
+    <sectnode>
     <type><xsl:text>section</xsl:text></type>
     <title><xsl:value-of select="title" /></title>
     <id><xsl:value-of select="@id" /></id>
+    <label><xsl:value-of select="@remap" /></label>
     <xsl:apply-templates />
-    </node>
+    </sectnode>
   </xsl:template>
 
   <!-- print filerefs -->

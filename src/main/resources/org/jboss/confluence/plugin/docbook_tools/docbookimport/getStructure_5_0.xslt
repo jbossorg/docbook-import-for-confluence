@@ -67,25 +67,27 @@
   </xsl:template>
   
   <!-- print first level section in chapter titles and picture refs inside  -->
-  <xsl:template match="d:book/d:chapter/d:section">
-    <node>
+  <xsl:template match="d:book/d:chapter/${1}d:section">
+    <sectnode>
     <type><xsl:text>section</xsl:text></type>
     <title><xsl:value-of select="d:title" /></title>
     <xsl:if test="@id"><id><xsl:value-of select="@id" /></id></xsl:if>
     <xsl:if test="@xml:id"><id><xsl:value-of select="@xml:id" /></id></xsl:if>
+    <label><xsl:value-of select="@remap" /></label>
     <xsl:apply-templates />
-    </node>
+    </sectnode>
   </xsl:template>
 
   <!-- print first level section in appendix titles and picture refs inside  -->
-  <xsl:template match="d:book/d:appendix/d:section">
-    <node>
+  <xsl:template match="d:book/d:appendix/${1}d:section">
+    <sectnode>
     <type><xsl:text>section</xsl:text></type>
     <title><xsl:value-of select="d:title" /></title>
     <xsl:if test="@id"><id><xsl:value-of select="@id" /></id></xsl:if>
     <xsl:if test="@xml:id"><id><xsl:value-of select="@xml:id" /></id></xsl:if>
+    <label><xsl:value-of select="@remap" /></label>
     <xsl:apply-templates />
-    </node>
+    </sectnode>
   </xsl:template>
 
   <!-- print filerefs -->

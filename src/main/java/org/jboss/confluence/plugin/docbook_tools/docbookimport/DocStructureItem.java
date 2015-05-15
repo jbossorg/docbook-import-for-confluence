@@ -21,11 +21,12 @@
 package org.jboss.confluence.plugin.docbook_tools.docbookimport;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.confluence.plugin.docbook_tools.utils.ConfluencePageTitleUniqEnabled;
-import org.jboss.confluence.plugin.docbook_tools.utils.ConfluenceUtils;
 
 /**
  * Value object used to hold parsed imported document structure.
@@ -35,284 +36,308 @@ import org.jboss.confluence.plugin.docbook_tools.utils.ConfluenceUtils;
  */
 public class DocStructureItem implements ConfluencePageTitleUniqEnabled {
 
-  public static final String TYPE_BOOK = "book";
-  public static final String TYPE_CHAPTER = "chapter";
-  public static final String TYPE_APPENDIX = "appendix";
-  public static final String TYPE_SECTION = "section";
+	public static final String TYPE_BOOK = "book";
+	public static final String TYPE_CHAPTER = "chapter";
+	public static final String TYPE_APPENDIX = "appendix";
+	public static final String TYPE_SECTION = "section";
 
-  /**
-   * Basic constructor.
-   */
-  public DocStructureItem() {
+	/**
+	 * Basic constructor.
+	 */
+	public DocStructureItem() {
 
-  }
+	}
 
-  /**
-   * Constructor.
-   * 
-   * @param type to set, see {@link #type} doc.
-   */
-  public DocStructureItem(String type) {
-    this.type = type;
-  }
+	/**
+	 * Constructor.
+	 * 
+	 * @param type to set, see {@link #type} doc.
+	 */
+	public DocStructureItem(String type) {
+		this.type = type;
+	}
 
-  /**
-   * Filling constructor.
-   * 
-   * @param type to set, see {@link #type} doc.
-   * @param id to set
-   * @param title to set
-   */
-  public DocStructureItem(String type, String id, String title) {
-    super();
-    this.type = type;
-    this.id = id;
-    setTitle(title);
-  }
+	/**
+	 * Filling constructor.
+	 * 
+	 * @param type to set, see {@link #type} doc.
+	 * @param id to set
+	 * @param title to set
+	 */
+	public DocStructureItem(String type, String id, String title) {
+		super();
+		this.type = type;
+		setId(id);
+		setTitle(title);
+	}
 
-  /**
-   * Title
-   */
-  private String title;
+	/**
+	 * Title
+	 */
+	private String title;
 
-  /**
-   * Title normalized to may be used in Confluence Page title
-   */
-  private String confluencePageTitleBase;
+	/**
+	 * Title normalized to may be used in Confluence Page title
+	 */
+	private String confluencePageTitleBase;
 
-  /**
-   * Prefix for Confluence Page Title
-   */
-  private String confluencePageTitlePrefix;
+	/**
+	 * Prefix for Confluence Page Title
+	 */
+	private String confluencePageTitlePrefix;
 
-  /**
-   * Type of node, must be same as DocBook element name (book, chapter, appendix) because used in
-   * {@link #getDocBookXPath()}! See <code>TYPE_xxx</code> constants.
-   */
-  private String type;
+	/**
+	 * Type of node, must be same as DocBook element name (book, chapter, appendix) because used in
+	 * {@link #getDocBookXPath()}! See <code>TYPE_xxx</code> constants.
+	 */
+	private String type;
 
-  /**
-   * Id of node
-   */
-  private String id;
+	/**
+	 * Id of node
+	 */
+	private String id;
 
-  /**
-   * Parent node. <code>null</code> for root node.
-   */
-  private DocStructureItem parent;
+	/**
+	 * Parent node. <code>null</code> for root node.
+	 */
+	private DocStructureItem parent;
 
-  /**
-   * List of child nodes.
-   */
-  private List<DocStructureItem> childs = new ArrayList<DocStructureItem>();
+	/**
+	 * List of child nodes.
+	 */
+	private List<DocStructureItem> childs = new ArrayList<DocStructureItem>();
 
-  /**
-   * List of external file refs (http:// etc) in this node
-   */
-  private List<String> filerefsExternal = new ArrayList<String>();
+	/**
+	 * List of external file refs (http:// etc) in this node
+	 */
+	private List<String> filerefsExternal = new ArrayList<String>();
 
-  /**
-   * List of local file refs (go to file in export zip) in this node (so filerefs to disk)
-   */
-  private List<String> filerefsLocal = new ArrayList<String>();
+	/**
+	 * List of local file refs (go to file in export zip) in this node (so filerefs to disk)
+	 */
+	private List<String> filerefsLocal = new ArrayList<String>();
 
-  /**
-   * @return the title
-   */
-  public String getTitle() {
-    return title;
-  }
+	/**
+	 * Set of labels for this node - used as labels for confluence page created from this node
+	 */
+	private Set<String> labels = new HashSet<String>();
 
-  /**
-   * @param title the title to set
-   */
-  public void setTitle(String title) {
-    if (StringUtils.isNotBlank(title)) {
-      this.title = title;
-      confluencePageTitleBase = ConfluenceUtils.normalizeTitleForConfluence(title);
-    }
-  }
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-  @Override
-  public String getConfluencePageTitle() {
-    if (confluencePageTitleBase == null)
-      return null;
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		if (StringUtils.isNotBlank(title)) {
+			this.title = title;
+			// Not necessary anymore as conflu 5.5 allows all characters
+			// confluencePageTitleBase = ConfluenceUtils.normalizeTitleForConfluence(title);
+			confluencePageTitleBase = title;
+		}
+	}
 
-    if (confluencePageTitlePrefix == null)
-      return confluencePageTitleBase;
-    else
-      return confluencePageTitlePrefix + "-" + confluencePageTitleBase;
-  }
+	@Override
+	public String getConfluencePageTitle() {
+		if (confluencePageTitleBase == null)
+			return null;
 
-  @Override
-  public void setConfluencePageTitlePrefix(String confluencePageTitlePrefix) {
-    this.confluencePageTitlePrefix = confluencePageTitlePrefix;
-  }
+		if (confluencePageTitlePrefix == null)
+			return confluencePageTitleBase;
+		else
+			return confluencePageTitlePrefix + "-" + confluencePageTitleBase;
+	}
 
-  /**
-   * @return the childs
-   */
-  public List<DocStructureItem> getChilds() {
-    return childs;
-  }
+	@Override
+	public void setConfluencePageTitlePrefix(String confluencePageTitlePrefix) {
+		this.confluencePageTitlePrefix = confluencePageTitlePrefix;
+	}
 
-  /**
-   * Add child structure node to this node. {@link #type} must be set on this node!
-   * 
-   * @param child the child to add.
-   */
-  public void addChild(DocStructureItem child) {
-    if (child.getType() == null) {
-      throw new IllegalArgumentException("type must be set in child node");
-    }
-    child.parent = this;
-    this.childs.add(child);
-  }
+	/**
+	 * @return the childs
+	 */
+	public List<DocStructureItem> getChilds() {
+		return childs;
+	}
 
-  /**
-   * @return the filerefs
-   */
-  public List<String> getFilerefsExternal() {
-    return filerefsExternal;
-  }
+	/**
+	 * Add child structure node to this node. {@link #type} must be set on this node!
+	 * 
+	 * @param child the child to add.
+	 */
+	public void addChild(DocStructureItem child) {
+		if (child.getType() == null) {
+			throw new IllegalArgumentException("type must be set in child node");
+		}
+		child.parent = this;
+		this.childs.add(child);
+	}
 
-  /**
-   * @return the filerefs
-   */
-  public List<String> getFilerefsLocal() {
-    return filerefsLocal;
-  }
+	/**
+	 * @return the filerefs
+	 */
+	public List<String> getFilerefsExternal() {
+		return filerefsExternal;
+	}
 
-  /**
-   * @return the id
-   */
-  public String getId() {
-    return id;
-  }
+	/**
+	 * @return the filerefs
+	 */
+	public List<String> getFilerefsLocal() {
+		return filerefsLocal;
+	}
 
-  /**
-   * @param id the id to set
-   */
-  public void setId(String id) {
-    if (StringUtils.isNotBlank(id)) {
-      this.id = id;
-    }
-  }
+	/**
+	 * @return the labels
+	 */
+	public Set<String> getLabels() {
+		return labels;
+	}
 
-  /**
-   * Get type of node. Type must be same as DocBook element name (book, chapter, appendix) because used in
-   * {@link #getDocBookXPath()} also!
-   * 
-   * @return the type
-   */
-  public String getType() {
-    return type;
-  }
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 
-  /**
-   * Set type of node. Type must be same as DocBook element name (book, chapter, appendix) because used in
-   * {@link #getDocBookXPath()}!
-   * 
-   * @param type the type to set
-   */
-  public void setType(String type) {
-    this.type = type;
-  }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = StringUtils.trimToNull(id);
+	}
 
-  /**
-   * Get parent node.
-   * 
-   * @return the parent, may be null for root node
-   */
-  public DocStructureItem getParent() {
-    return parent;
-  }
+	/**
+	 * Get type of node. Type must be same as DocBook element name (book, chapter, appendix) because used in
+	 * {@link #getDocBookXPath()} also!
+	 * 
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
 
-  /**
-   * Get root node of tree hierarchy this node is in.
-   * 
-   * @return root node of tree hierarchy.
-   */
-  public DocStructureItem getRoot() {
-    if (parent == null)
-      return this;
-    else
-      return parent.getRoot();
-  }
+	/**
+	 * Set type of node. Type must be same as DocBook element name (book, chapter, appendix) because used in
+	 * {@link #getDocBookXPath()}!
+	 * 
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
 
-  /**
-   * Add file reference used in this part of DocBook content.
-   * 
-   * @param fileref to add into list
-   * @see #getFilerefsLocal()
-   * @see #getFilerefsExternal()
-   */
-  public void addFileref(String fileref) {
-    if (fileref == null || fileref.trim().isEmpty()) {
-      throw new IllegalArgumentException("fileref is null or empty");
-    }
-    int ind = fileref.indexOf("://");
-    if (ind > 0 && ind < 10) {
-      filerefsExternal.add(fileref);
-    } else {
-      filerefsLocal.add(fileref);
-    }
-  }
+	/**
+	 * Get parent node.
+	 * 
+	 * @return the parent, may be null for root node
+	 */
+	public DocStructureItem getParent() {
+		return parent;
+	}
 
-  /**
-   * Get index of given child in me counted for same types.
-   * 
-   * @param child to count index for
-   * @return index of child by type (zero based), -1 means it's not my child.
-   */
-  public int getChildTypeIndex(DocStructureItem child) {
-    int idx = 0;
-    for (DocStructureItem myChild : childs) {
-      if (myChild == child) {
-        return idx;
-      } else if (myChild.getType().equals(child.getType())) {
-        idx++;
-      }
-    }
-    return -1;
-  }
+	/**
+	 * Get root node of tree hierarchy this node is in.
+	 * 
+	 * @return root node of tree hierarchy.
+	 */
+	public DocStructureItem getRoot() {
+		if (parent == null)
+			return this;
+		else
+			return parent.getRoot();
+	}
 
-  /**
-   * Get XPath for this node item
-   * 
-   * @param xmlnsPrefix to be used for path, must contain :, may be null
-   * @return
-   */
-  public String getDocBookXPath(String xmlnsPrefix) {
-    if (xmlnsPrefix == null) {
-      xmlnsPrefix = "";
-    }
-    if (parent == null) {
-      return xmlnsPrefix + type;
-    } else {
+	/**
+	 * Add file reference used in this part of DocBook content.
+	 * 
+	 * @param fileref to add into list
+	 * @see #getFilerefsLocal()
+	 * @see #getFilerefsExternal()
+	 */
+	public void addFileref(String fileref) {
+		if (fileref == null || fileref.trim().isEmpty()) {
+			throw new IllegalArgumentException("fileref is null or empty");
+		}
+		int ind = fileref.indexOf("://");
+		if (ind > 0 && ind < 10) {
+			filerefsExternal.add(fileref);
+		} else {
+			filerefsLocal.add(fileref);
+		}
+	}
 
-      return parent.getDocBookXPath(xmlnsPrefix) + "/" + xmlnsPrefix + type + "["
-          + (parent.getChildTypeIndex(this) + 1) + "]";
-    }
-  }
+	public void addLabel(String label) {
+		label = StringUtils.trimToNull(label);
+		if (label != null) {
+			labels.add(label);
+		}
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("<DocStructureItem id='").append(id).append("' type='").append(type).append("' title='").append(title)
-        .append("' filerefsLocal='").append(filerefsLocal).append("' filerefsExternal='").append(filerefsExternal);
-    if (!childs.isEmpty()) {
-      sb.append("'>\n");
-      for (DocStructureItem i : childs) {
-        sb.append(i);
-        sb.append("\n");
-      }
-      sb.append("</DocStructureItem>");
-    } else {
-      sb.append("' />");
-    }
+	/**
+	 * Get index of given child in me counted for same types.
+	 * 
+	 * @param child to count index for
+	 * @return index of child by type (zero based), -1 means it's not my child.
+	 */
+	public int getChildTypeIndex(DocStructureItem child) {
+		int idx = 0;
+		for (DocStructureItem myChild : childs) {
+			if (myChild == child) {
+				return idx;
+			} else if (myChild.getType().equals(child.getType())) {
+				idx++;
+			}
+		}
+		return -1;
+	}
 
-    return sb.toString();
-  }
+	/**
+	 * Get XPath for this node item
+	 * 
+	 * @param xmlnsPrefix to be used for path, must contain :, may be null
+	 * @return
+	 */
+	public String getDocBookXPath(String xmlnsPrefix) {
+		if (xmlnsPrefix == null) {
+			xmlnsPrefix = "";
+		}
+		if (parent == null) {
+			return xmlnsPrefix + type;
+		} else {
+
+			return parent.getDocBookXPath(xmlnsPrefix) + "/" + xmlnsPrefix + type + "["
+					+ (parent.getChildTypeIndex(this) + 1) + "]";
+		}
+	}
+
+	@Override
+	public String toString() {
+		return toString(true);
+	}
+
+	public String toString(boolean printChilds) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<DocStructureItem id='").append(id).append("' type='").append(type).append("' title='").append(title)
+				.append("' labels='").append(labels).append("' filerefsLocal='").append(filerefsLocal)
+				.append("' filerefsExternal='").append(filerefsExternal);
+		if (printChilds && !childs.isEmpty()) {
+			sb.append("'>\n");
+			for (DocStructureItem i : childs) {
+				sb.append(i);
+				sb.append("\n");
+			}
+			sb.append("</DocStructureItem>");
+		} else {
+			sb.append("' />");
+		}
+
+		return sb.toString();
+	}
 
 }

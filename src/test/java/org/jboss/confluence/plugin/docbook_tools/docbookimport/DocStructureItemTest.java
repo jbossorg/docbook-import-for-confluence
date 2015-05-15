@@ -30,216 +30,278 @@ import org.junit.Test;
  */
 public class DocStructureItemTest {
 
-  @Test
-  public void testFileRefs() {
-    DocStructureItem tested = new DocStructureItem();
+	@Test
+	public void testFileRefs() {
+		DocStructureItem tested = new DocStructureItem();
 
-    Assert.assertEquals(0, tested.getFilerefsExternal().size());
-    Assert.assertEquals(0, tested.getFilerefsLocal().size());
+		Assert.assertEquals(0, tested.getFilerefsExternal().size());
+		Assert.assertEquals(0, tested.getFilerefsLocal().size());
 
-    tested.addFileref("http://myfile.com/ddd.gif");
-    Assert.assertEquals(1, tested.getFilerefsExternal().size());
-    Assert.assertEquals(0, tested.getFilerefsLocal().size());
+		tested.addFileref("http://myfile.com/ddd.gif");
+		Assert.assertEquals(1, tested.getFilerefsExternal().size());
+		Assert.assertEquals(0, tested.getFilerefsLocal().size());
 
-    tested.addFileref("https://myfile.com/ddd.gif");
-    Assert.assertEquals(2, tested.getFilerefsExternal().size());
-    Assert.assertEquals(0, tested.getFilerefsLocal().size());
+		tested.addFileref("https://myfile.com/ddd.gif");
+		Assert.assertEquals(2, tested.getFilerefsExternal().size());
+		Assert.assertEquals(0, tested.getFilerefsLocal().size());
 
-    tested.addFileref("download/ddd.gif");
-    Assert.assertEquals(2, tested.getFilerefsExternal().size());
-    Assert.assertEquals(1, tested.getFilerefsLocal().size());
+		tested.addFileref("download/ddd.gif");
+		Assert.assertEquals(2, tested.getFilerefsExternal().size());
+		Assert.assertEquals(1, tested.getFilerefsLocal().size());
 
-    tested.addFileref("author/download/ddd.gif");
-    Assert.assertEquals(2, tested.getFilerefsExternal().size());
-    Assert.assertEquals(2, tested.getFilerefsLocal().size());
+		tested.addFileref("author/download/ddd.gif");
+		Assert.assertEquals(2, tested.getFilerefsExternal().size());
+		Assert.assertEquals(2, tested.getFilerefsLocal().size());
 
-    tested.addFileref("something/download/ddd.gif");
-    Assert.assertEquals(2, tested.getFilerefsExternal().size());
-    Assert.assertEquals(3, tested.getFilerefsLocal().size());
+		tested.addFileref("something/download/ddd.gif");
+		Assert.assertEquals(2, tested.getFilerefsExternal().size());
+		Assert.assertEquals(3, tested.getFilerefsLocal().size());
 
-    try {
-      tested.addFileref(null);
-      Assert.fail("No exception thrown");
-    } catch (IllegalArgumentException e) {
+		try {
+			tested.addFileref(null);
+			Assert.fail("No exception thrown");
+		} catch (IllegalArgumentException e) {
 
-    }
+		}
 
-    try {
-      tested.addFileref("  ");
-      Assert.fail("No exception thrown");
-    } catch (IllegalArgumentException e) {
+		try {
+			tested.addFileref("  ");
+			Assert.fail("No exception thrown");
+		} catch (IllegalArgumentException e) {
 
-    }
+		}
 
-  }
+	}
 
-  @Test
-  public void testTitle() {
-    DocStructureItem tested = new DocStructureItem();
-    Assert.assertNull(tested.getTitle());
-    tested.setTitle("My Title");
-    Assert.assertEquals("My Title", tested.getTitle());
+	@Test
+	public void testTitle() {
+		DocStructureItem tested = new DocStructureItem();
+		Assert.assertNull(tested.getTitle());
+		tested.setTitle("My Title");
+		Assert.assertEquals("My Title", tested.getTitle());
 
-    tested.setTitle("");
-    Assert.assertEquals("My Title", tested.getTitle());
+		tested.setTitle("");
+		Assert.assertEquals("My Title", tested.getTitle());
 
-    tested.setTitle(null);
-    Assert.assertEquals("My Title", tested.getTitle());
+		tested.setTitle(null);
+		Assert.assertEquals("My Title", tested.getTitle());
 
-  }
+	}
 
-  @Test
-  public void testId() {
-    DocStructureItem tested = new DocStructureItem();
-    Assert.assertNull(tested.getId());
-    tested.setId("My ID");
-    Assert.assertEquals("My ID", tested.getId());
+	@Test
+	public void testId() {
+		DocStructureItem tested = new DocStructureItem();
+		Assert.assertNull(tested.getId());
+		tested.setId("My ID");
+		Assert.assertEquals("My ID", tested.getId());
 
-    tested.setId("");
-    Assert.assertEquals("My ID", tested.getId());
+		tested.setId("My ID");
+		tested.setId("  ");
+		Assert.assertNull(tested.getId());
 
-    tested.setId(null);
-    Assert.assertEquals("My ID", tested.getId());
-  }
+		tested.setId("My ID");
+		tested.setId("");
+		Assert.assertNull(tested.getId());
 
-  @Test
-  public void testType() {
-    DocStructureItem tested = new DocStructureItem();
-    Assert.assertNull(tested.getType());
-    tested.setType(DocStructureItem.TYPE_BOOK);
-    Assert.assertEquals(DocStructureItem.TYPE_BOOK, tested.getType());
-  }
+		tested.setId("My ID");
+		tested.setId(null);
+		Assert.assertNull(tested.getId());
+	}
 
-  @Test
-  public void testConstructors() {
-    DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK, "My ID", "My Title");
-    Assert.assertEquals(DocStructureItem.TYPE_BOOK, tested.getType());
-    Assert.assertEquals("My ID", tested.getId());
-    Assert.assertEquals("My Title", tested.getTitle());
-  }
+	@Test
+	public void testType() {
+		DocStructureItem tested = new DocStructureItem();
+		Assert.assertNull(tested.getType());
+		tested.setType(DocStructureItem.TYPE_BOOK);
+		Assert.assertEquals(DocStructureItem.TYPE_BOOK, tested.getType());
+	}
 
-  @Test
-  public void testToString() {
-    DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK, "My ID", "My Title");
+	@Test
+	public void testLabels() {
+		DocStructureItem tested = new DocStructureItem();
+		Assert.assertNotNull(tested.getLabels());
+		Assert.assertEquals(0, tested.getLabels().size());
 
-    String ts = tested.toString();
-    Assert.assertTrue(ts.contains("'My ID'"));
+		tested.addLabel(null);
+		Assert.assertEquals(0, tested.getLabels().size());
 
-    tested.addChild(new DocStructureItem(DocStructureItem.TYPE_APPENDIX));
-    ts = tested.toString();
-    Assert.assertTrue(ts.contains("'appendix'"));
+		tested.addLabel("");
+		Assert.assertEquals(0, tested.getLabels().size());
 
-  }
+		tested.addLabel("   ");
+		Assert.assertEquals(0, tested.getLabels().size());
 
-  @Test
-  public void testChildsTree() {
-    DocStructureItem root = new DocStructureItem(DocStructureItem.TYPE_BOOK);
+		tested.addLabel("test_label");
+		Assert.assertEquals(1, tested.getLabels().size());
+		Assert.assertTrue(tested.getLabels().contains("test_label"));
 
-    Assert.assertEquals(0, root.getChilds().size());
-    Assert.assertNull(root.getParent());
-    Assert.assertEquals(root, root.getRoot());
+		// test additivity
+		tested.addLabel("test_label_2");
+		Assert.assertEquals(2, tested.getLabels().size());
+		Assert.assertTrue(tested.getLabels().contains("test_label"));
+		Assert.assertTrue(tested.getLabels().contains("test_label_2"));
 
-    DocStructureItem child1 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    root.addChild(child1);
-    Assert.assertEquals(1, root.getChilds().size());
-    Assert.assertEquals(root, child1.getParent());
-    Assert.assertEquals(root, child1.getRoot());
+		// test duplicity removed
+		tested.addLabel("test_label");
+		Assert.assertEquals(2, tested.getLabels().size());
+		Assert.assertTrue(tested.getLabels().contains("test_label"));
+		Assert.assertTrue(tested.getLabels().contains("test_label_2"));
 
-    DocStructureItem child2 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    root.addChild(child2);
-    Assert.assertEquals(2, root.getChilds().size());
-    Assert.assertEquals(root, child2.getParent());
-    Assert.assertEquals(root, child2.getRoot());
+	}
 
-    DocStructureItem child22 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
-    child2.addChild(child22);
-    Assert.assertEquals(2, root.getChilds().size());
-    Assert.assertEquals(1, child2.getChilds().size());
-    Assert.assertEquals(child2, child22.getParent());
-    Assert.assertEquals(root, child22.getRoot());
+	@Test
+	public void testConstructors() {
+		DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK, "My ID", "My Title");
+		Assert.assertEquals(DocStructureItem.TYPE_BOOK, tested.getType());
+		Assert.assertEquals("My ID", tested.getId());
+		Assert.assertEquals("My Title", tested.getTitle());
+	}
 
-    try {
-      root.addChild(new DocStructureItem());
-      Assert.fail("No IllegalArgumentException thrown");
-    } catch (IllegalArgumentException e) {
-      // OK
-    }
-  }
+	@Test
+	public void testToString() {
+		DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK, "My ID", "My Title");
 
-  @Test
-  public void getDocBookXPath() {
+		String ts = tested.toString();
+		Assert.assertTrue(ts.contains("'My ID'"));
 
-    DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK);
-    Assert.assertEquals("book", tested.getDocBookXPath(null));
+		tested.addChild(new DocStructureItem(DocStructureItem.TYPE_APPENDIX));
+		ts = tested.toString();
+		Assert.assertTrue(ts.contains("'appendix'"));
 
-    DocStructureItem child = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    tested.addChild(child);
-    Assert.assertEquals("book/chapter[1]", child.getDocBookXPath(null));
+	}
 
-    DocStructureItem child2 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    tested.addChild(child2);
-    Assert.assertEquals("book/chapter[2]", child2.getDocBookXPath(null));
+	@Test
+	public void testChildsTree() {
+		DocStructureItem root = new DocStructureItem(DocStructureItem.TYPE_BOOK);
 
-    DocStructureItem child3 = new DocStructureItem(DocStructureItem.TYPE_APPENDIX);
-    tested.addChild(child3);
-    Assert.assertEquals("book/appendix[1]", child3.getDocBookXPath(null));
+		Assert.assertEquals(0, root.getChilds().size());
+		Assert.assertNull(root.getParent());
+		Assert.assertEquals(root, root.getRoot());
 
-    DocStructureItem child4 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    tested.addChild(child4);
-    Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
+		DocStructureItem child1 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		root.addChild(child1);
+		Assert.assertEquals(1, root.getChilds().size());
+		Assert.assertEquals(root, child1.getParent());
+		Assert.assertEquals(root, child1.getRoot());
 
-    DocStructureItem child41 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
-    child4.addChild(child41);
-    Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
-    Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
+		DocStructureItem child2 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		root.addChild(child2);
+		Assert.assertEquals(2, root.getChilds().size());
+		Assert.assertEquals(root, child2.getParent());
+		Assert.assertEquals(root, child2.getRoot());
 
-    DocStructureItem child42 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
-    child4.addChild(child42);
-    Assert.assertEquals("d:book/d:chapter[3]/d:section[2]", child42.getDocBookXPath("d:"));
-    Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
-    Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
-  }
+		DocStructureItem child22 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
+		child2.addChild(child22);
+		Assert.assertEquals(2, root.getChilds().size());
+		Assert.assertEquals(1, child2.getChilds().size());
+		Assert.assertEquals(child2, child22.getParent());
+		Assert.assertEquals(root, child22.getRoot());
 
-  @Test
-  public void getChildTypeIndex() {
+		try {
+			root.addChild(new DocStructureItem());
+			Assert.fail("No IllegalArgumentException thrown");
+		} catch (IllegalArgumentException e) {
+			// OK
+		}
+	}
 
-    DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK);
+	@Test
+	public void getDocBookXPath() {
 
-    DocStructureItem child = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    tested.addChild(child);
-    Assert.assertEquals(0, tested.getChildTypeIndex(child));
+		DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK);
+		Assert.assertEquals("book", tested.getDocBookXPath(null));
 
-    DocStructureItem child2 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    tested.addChild(child2);
-    Assert.assertEquals(1, tested.getChildTypeIndex(child2));
+		DocStructureItem child = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		tested.addChild(child);
+		Assert.assertEquals("book/chapter[1]", child.getDocBookXPath(null));
 
-    DocStructureItem child3 = new DocStructureItem(DocStructureItem.TYPE_APPENDIX);
-    tested.addChild(child3);
-    Assert.assertEquals(0, tested.getChildTypeIndex(child3));
+		DocStructureItem child2 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		tested.addChild(child2);
+		Assert.assertEquals("book/chapter[2]", child2.getDocBookXPath(null));
 
-    DocStructureItem child4 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    tested.addChild(child4);
-    Assert.assertEquals(2, tested.getChildTypeIndex(child4));
+		DocStructureItem child3 = new DocStructureItem(DocStructureItem.TYPE_APPENDIX);
+		tested.addChild(child3);
+		Assert.assertEquals("book/appendix[1]", child3.getDocBookXPath(null));
 
-    DocStructureItem nochild = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
-    Assert.assertEquals(-1, tested.getChildTypeIndex(nochild));
+		DocStructureItem child4 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		tested.addChild(child4);
+		Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
 
-  }
+		DocStructureItem child41 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
+		child4.addChild(child41);
+		Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
+		Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
 
-  @Test
-  public void getConfluencePageTitle() {
-    DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK);
-    Assert.assertNull(tested.getConfluencePageTitle());
+		DocStructureItem child42 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
+		child4.addChild(child42);
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]", child42.getDocBookXPath("d:"));
+		Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
+		Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
 
-    tested.setTitle("AAj1j_ff:@/\\|^#;[]{}<>$~");
-    Assert.assertEquals("AAj1j_ff________________", tested.getConfluencePageTitle());
+		DocStructureItem child421 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
+		child42.addChild(child421);
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]/d:section[1]", child421.getDocBookXPath("d:"));
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]", child42.getDocBookXPath("d:"));
+		Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
+		Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
 
-    tested.setConfluencePageTitlePrefix("AD");
-    Assert.assertEquals("AD-AAj1j_ff________________", tested.getConfluencePageTitle());
+		DocStructureItem child422 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
+		child42.addChild(child422);
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]/d:section[2]", child422.getDocBookXPath("d:"));
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]", child42.getDocBookXPath("d:"));
+		Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
+		Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
 
-    tested.setConfluencePageTitlePrefix(null);
-    Assert.assertEquals("AAj1j_ff________________", tested.getConfluencePageTitle());
+		DocStructureItem child4221 = new DocStructureItem(DocStructureItem.TYPE_SECTION);
+		child422.addChild(child4221);
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]/d:section[2]/d:section[1]", child4221.getDocBookXPath("d:"));
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]/d:section[2]", child422.getDocBookXPath("d:"));
+		Assert.assertEquals("d:book/d:chapter[3]/d:section[2]", child42.getDocBookXPath("d:"));
+		Assert.assertEquals("book/chapter[3]/section[1]", child41.getDocBookXPath(null));
+		Assert.assertEquals("book/chapter[3]", child4.getDocBookXPath(null));
 
-  }
+	}
+
+	@Test
+	public void getChildTypeIndex() {
+
+		DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK);
+
+		DocStructureItem child = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		tested.addChild(child);
+		Assert.assertEquals(0, tested.getChildTypeIndex(child));
+
+		DocStructureItem child2 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		tested.addChild(child2);
+		Assert.assertEquals(1, tested.getChildTypeIndex(child2));
+
+		DocStructureItem child3 = new DocStructureItem(DocStructureItem.TYPE_APPENDIX);
+		tested.addChild(child3);
+		Assert.assertEquals(0, tested.getChildTypeIndex(child3));
+
+		DocStructureItem child4 = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		tested.addChild(child4);
+		Assert.assertEquals(2, tested.getChildTypeIndex(child4));
+
+		DocStructureItem nochild = new DocStructureItem(DocStructureItem.TYPE_CHAPTER);
+		Assert.assertEquals(-1, tested.getChildTypeIndex(nochild));
+
+	}
+
+	@Test
+	public void getConfluencePageTitle() {
+		DocStructureItem tested = new DocStructureItem(DocStructureItem.TYPE_BOOK);
+		Assert.assertNull(tested.getConfluencePageTitle());
+
+		tested.setTitle("AAj1j_ff:@/\\|^#;[]{}<>$~");
+		Assert.assertEquals("AAj1j_ff:@/\\|^#;[]{}<>$~", tested.getConfluencePageTitle());
+
+		tested.setConfluencePageTitlePrefix("AD");
+		Assert.assertEquals("AD-AAj1j_ff:@/\\|^#;[]{}<>$~", tested.getConfluencePageTitle());
+
+		tested.setConfluencePageTitlePrefix(null);
+		Assert.assertEquals("AAj1j_ff:@/\\|^#;[]{}<>$~", tested.getConfluencePageTitle());
+
+	}
 
 }

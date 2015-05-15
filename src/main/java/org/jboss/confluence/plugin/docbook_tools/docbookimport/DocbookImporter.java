@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -36,16 +37,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.confluence.plugin.docbook_tools.utils.FileUtils;
 import org.jboss.confluence.plugin.docbook_tools.utils.RegExpUtils;
 import org.jboss.confluence.plugin.docbook_tools.utils.SAXErrorHandler;
 import org.jboss.confluence.plugin.docbook_tools.utils.XSLTErrorListener;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.ParserAdapter;
-
-import com.atlassian.gzipfilter.org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 
 /**
  * Class used to import DocBook files with "JBoss Documentation Guide" structure to Confluence.
@@ -66,6 +65,7 @@ public class DocbookImporter {
     printClassInfo(saxParserFactory.getClass(), "XML SAXParserFactory implementation from JAXP");
     saxParserFactory.setXIncludeAware(true);
     saxParserFactory.setNamespaceAware(true);
+    // do not validate saxParserFactory.setValidating(true);
   }
 
   // XSLT engine
@@ -159,25 +159,62 @@ public class DocbookImporter {
   }
 
   /**
-   * Get structure of titles and chapters from DocBook xml file to be used for further processing.
+   * Get document structure of chapters and sections from DocBook xml file to be used for further processing.
    * 
    * @param xmlToTransform
    * @param xmlToTransformURL URL of <code>xmlToTransform</code> file (may be <code>file://</code> too). We need it to
    *          correctly evaluate relative paths.
    * @param docbookVersion version of docbook to process
+   * @allSectionLevels if set to true then all section levels are in structure. If false then only first section level.
    * @return structure of titles
    * @throws Exception
    */
   public DocStructureItem getDocStructure(InputStream xmlToTransform, String xmlToTransformURL,
-      DocBookVersion docbookVersion) throws Exception {
+      DocBookVersion docbookVersion, boolean allSectionLevels) throws Exception {
 
-    InputStream xsltTemplate = getFileFromResources("getStructure" + docbookVersion.getFilenamePostfix() + ".xslt");
+    String xslt = FileUtils.readFileAsString(getFileFromResources("getStructure" + docbookVersion.getFilenamePostfix()
+        + ".xslt"));
+
+    // customize XSLT template for this run
+    if (allSectionLevels) {
+      xslt = xslt.replaceAll("\\$\\{1\\}", "/");
+    } else {
+      xslt = xslt.replaceAll("\\$\\{1\\}", "");
+    }
+
+    // perform XSLT transformation
+    InputStream xsltTemplate = new ByteArrayInputStream(xslt.getBytes(FileUtils.CHARSET_UTF_8));
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     processXslt(xsltTemplate, xmlToTransform, xmlToTransformURL, out);
 
     if (log.isDebugEnabled())
       log.debug("DocStructureXML: " + out.toString("UTF-8"));
 
+    try {
+
+      DocStructureItem ret = parseDocStructureXML(new ByteArrayInputStream(out.toByteArray()));
+
+      if (log.isDebugEnabled())
+        log.debug("DocStructureObjectTree: " + ret);
+
+      validateDocStructure(ret);
+      return ret;
+    } catch (Exception e) {
+      log.error(e.getMessage() + " in DocStructureXML file content: " + out.toString("UTF-8"));
+      throw e;
+    }
+  }
+
+  /**
+   * Parse document structure XML into java objects.
+   * 
+   * @param docStructureXML input stream with document structure XML
+   * @return document structure in Object representation
+   * @throws IOException
+   * @throws SAXException
+   */
+  protected DocStructureItem parseDocStructureXML(InputStream docStructureXML) throws IOException, SAXException {
+    // parse XML to object structure
     Digester dig = new Digester();
     dig.setClassLoader(DocbookImporter.class.getClassLoader());
     dig.setValidating(false);
@@ -201,30 +238,25 @@ public class DocbookImporter {
     dig.addCallMethod("node/node/fileref", "addFileref", 1);
     dig.addCallParam("node/node/fileref", 0);
 
-    // first level of sections info
-    dig.addObjectCreate("node/node/node", DocStructureItem.class);
-    dig.addSetNext("node/node/node", "addChild");
-    dig.addCallMethod("node/node/node/title", "setTitle", 1);
-    dig.addCallParam("node/node/node/title", 0);
-    dig.addCallMethod("node/node/node/id", "setId", 1);
-    dig.addCallParam("node/node/node/id", 0);
-    dig.addCallMethod("node/node/node/type", "setType", 1);
-    dig.addCallParam("node/node/node/type", 0);
-    dig.addCallMethod("node/node/node/fileref", "addFileref", 1);
-    dig.addCallParam("node/node/node/fileref", 0);
+    // all levels of sections info
+    dig.addObjectCreate("*/sectnode", DocStructureItem.class);
+    dig.addSetNext("*/sectnode", "addChild");
+    dig.addCallMethod("*/sectnode/title", "setTitle", 1);
+    dig.addCallParam("*/sectnode/title", 0);
+    dig.addCallMethod("*/sectnode/id", "setId", 1);
+    dig.addCallParam("*/sectnode/id", 0);
+    dig.addCallMethod("*/sectnode/type", "setType", 1);
+    dig.addCallParam("*/sectnode/type", 0);
+    dig.addCallMethod("*/sectnode/fileref", "addFileref", 1);
+    dig.addCallParam("*/sectnode/fileref", 0);
+    dig.addCallMethod("*/sectnode/label", "addLabel", 1);
+    dig.addCallParam("*/sectnode/label", 0);
 
-    try {
-      DocStructureItem ret = (DocStructureItem) dig.parse(new ByteArrayInputStream(out.toByteArray()));
-      validateDocStructure(ret);
-      return ret;
-    } catch (Exception e) {
-      log.error(e.getMessage() + " in DocStructureXML file content: " + out.toString("UTF-8"));
-      throw e;
-    }
+    return (DocStructureItem) dig.parse(docStructureXML);
   }
 
   /**
-   * Validate document structure data. Check for mandatory fields.
+   * Validate document structure data. Check for mandatory fields (Title is mandatory).
    * 
    * @param item to validate
    */
@@ -233,9 +265,6 @@ public class DocbookImporter {
     if (!DocStructureItem.TYPE_BOOK.equals(item.getType())) {
       if (StringUtils.isBlank(item.getTitle())) {
         throw new IllegalArgumentException("Item without title: " + item.getDocBookXPath(null));
-      }
-      if (StringUtils.isBlank(item.getId())) {
-        throw new IllegalArgumentException("Item without id: " + item.getDocBookXPath(null));
       }
     }
     List<DocStructureItem> chl = item.getChilds();
@@ -282,8 +311,10 @@ public class DocbookImporter {
    */
   protected String patchWIKIContentInternalCrossReferences(DocStructureItem parent, String content) {
     for (DocStructureItem ch : parent.getChilds()) {
-      content = content.replaceAll("\\[(.*\\|)?" + RegExpUtils.escapeTextForRegexp(ch.getId()) + "\\]",
-          "[$1" + ch.getConfluencePageTitle() + "]");
+      if (StringUtils.isNotBlank(ch.getId())) {
+        content = content.replaceAll("\\[(.*\\|)?" + RegExpUtils.escapeTextForRegexp(ch.getId()) + "\\]",
+            "[$1" + ch.getConfluencePageTitle() + "]");
+      }
       content = patchWIKIContentInternalCrossReferences(ch, content);
     }
     return content;
@@ -390,10 +421,10 @@ public class DocbookImporter {
           javax.xml.transform.Result result = new javax.xml.transform.stream.StreamResult(output);
 
           // prepare XInclude aware parser which resolves necessary entities correctly
-          XMLReader reader = new ParserAdapter(saxParserFactory.newSAXParser().getParser());
-          reader.setEntityResolver(new JDGEntityResolver(reader.getEntityResolver()));
-          reader.setErrorHandler(eh);
-          SAXSource xmlSAXSource = new SAXSource(reader, xmlSource);
+          ParserAdapter xmlReader = new ParserAdapter(saxParserFactory.newSAXParser().getParser());
+          xmlReader.setEntityResolver(new JDGEntityResolver(xmlReader.getEntityResolver()));
+          xmlReader.setErrorHandler(eh);
+          SAXSource xmlSAXSource = new SAXSource(xmlReader, xmlSource);
 
           javax.xml.transform.Transformer trans = transformerFact.newTransformer(xsltSource);
 

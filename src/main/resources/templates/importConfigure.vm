@@ -8,84 +8,73 @@
   #decoratorParam("mode"    "space")
   #decoratorParam("context" "$action.page.type")
 <body>
-#if (!$actionMessages.empty)
-  <div class="successBox">
-    #foreach ($amsg in $actionMessages)  
-      <strong>$amsg</strong><br/>
-    #end
-  </div>
-#end
-   ## Layout Table
-<table border="0" cellspacing="2" cellpadding="2" width="100%">
+<div class="aui-group">
+    <div class="aui-item">
+      <h2>Import DocBook zip file</h2>
+    </div>
+</div>
+## Layout Table
+<table border="0" width="100%">
   <colgroup>
     <col width="60%"/>
     <col width="40%"/>
   </colgroup>
   <tr>
-    <td colspan="2">
-      <strong>Import DocBook zip file</strong>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top"> 
-      <table border="0" cellspacing="2" cellpadding="2" width="100%">
-        <colgroup>
-          <col width="30%"/>
-          <col width="70%"/>
-        </colgroup>
-      <form id="postprocessForm" action="importPerform.action" method="POST" enctype="multipart/form-data">
+    <td valign="top">
+    <div class="aui-item"> 
+      <form id="postprocessForm" action="importPerform.action" method="POST" enctype="multipart/form-data" class="aui">
         <input type="hidden" name="pageId" value="$!page.Id"/>
         <input type="hidden" name="spaceKey" value="$!space.Key"/>
         <input type="hidden" name="key" value="$!space.Key"/>
-        <tr>
-          <td valign="top"><label for="fileTopp">DocBook zip file:*</label></td>
-          <td><input type="file" name="fileTopp" id="fileTopp" value="Browse..." size="40"/></td>
-        </tr>
-        <tr>
-          <td valign="top"><label for="docbookver">DocBook version:*</label></td>
-          <td><select name="docbookver" id="docbookver">
+        <div class="field-group">
+          <label for="fileTopp">DocBook zip file<span class="aui-icon icon-required"> required</span></label>
+          <input type="file" name="fileTopp" id="fileTopp" class="upfile" value="Browse..."/>
+        </div>
+        <div class="field-group">
+          <label for="docbookver">DocBook version<span class="aui-icon icon-required"> required</span></label>
+          <select name="docbookver" id="docbookver" class="select">
                 <option value="4" #if($docbookver!=5)selected#end>DocBook 4</option>
                 <option value="5" #if($docbookver==5)selected#end>DocBook 5</option>
               </select>
-          </td>
-        </tr>
-        <tr>
-          <td valign="top"><label for="titlePrefixBase">Unique page title prefix base:</label></td>
-          <td><input type="text" name="titlePrefixBase" id="titlePrefixBase" size="4" maxlength="3" value="$titlePrefixBase"/> Optional two or three character (letters or numbers) string used to solve confluence unique page title constraint.</td>
-        </tr>
-        <tr>
-          <td valign="top">&nbsp;</td>
-          <td valign="top">
-            <input type="submit" class="submit" id="postprocessFormSubmitButton" value="Import" /> - may take longer, be patient please, do not resubmit.
-          </td>
-        </tr>
-        <tr>
-        <td valign="top" colspan="2">
-      <p>
-      <b>Steps after import</b> - IT IS NECESSARY TO CHECK WHOLE DOCUMENT CONTENT AFTER IMPORT. Be careful mainly around these points: 
-      <ul>
-        <li>special wiki syntax characters <code>*+-_[](){}</code> etc. are escaped with backslash during import (only outside <code>code</code> and <code>noformat</code> macros), but check it please.
-        <li>confluence wiki syntax doesn't allow formating inside <code>code</code> and <code>noformat</code> macros but DocBook allows it. So check content of <code>code</code> and <code>noformat</code> macros to check if correct because we remove all formating tags here and leave only text during import. 
-        <li>tables - checks all rows and cells, sometimes formatting in cell may break table (because adds unwanted row separator in cell or so).
-        <li>tables - table inside table cell not supported very well in confluence. We use <code>panel</code> to wrap it but output to the docbook may not be very accurate. Try to remove these structures please.
-        <li>ordered and unordered lists - sometimes unnecessary row is added so lists doesn't tie together and number sequences are broken.
-        <li>DocBook <code>procedure</code> structure is rather complicated, we try to import it as ordered list, but check it and reformat it if necessary
-        <li>DocBook <code>variablelist</code> structure is rather complicated, we try to import it as unordered list, but check it and reformat it if necessary
-        <li>cross-references within the book - correctly handled only references pointing to chapters and first level sections. References pointing to deeper sections or other content blocks (figures, tasks, procedures, etc.) stay incorrect in Confluence pointing to original id from DocBook xml file. You need to solve them manually by some appropriate way (pointing it to some existing page in Confluence, or breaking this page to smaller subpages and pointing reference to subpage for better granularity). 
-        <li>confluence has some restrictions to page titles (some characters are disallowed). These characters are replaced by <code>_</code> during import.
-        <li>DocBook defines many elements which has no representation in Confluence. Only text content from these elements is leaved in Confluence. Small subset of these elements is converted to monospaced or preformated text.     
-      </ul>        
-        </td>
-        </tr>
-      </form>
-      </table>
+        </div>
+        <div class="field-group">
+          <label for="titlePrefixBase">Unique page title prefix base</label>
+          <input type="text" class="text short-field" name="titlePrefixBase" id="titlePrefixBase" maxlength="3" value="$titlePrefixBase"/> 
+          <div class="description">Optional two or three character (letters or numbers) string used to solve confluence unique page title constraint.</div>
+        </div>
+        <div class="field-group">
+          <label for="allSectionLevels">All section levels as subpages</label>
+          <input type="checkbox" class="checkbox" name="allSectionLevels" id="allSectionLevels" value="true" #if($allSectionLevels==true)checked#end/>
+        </div>
+        <div class="buttons-container">
+        <div class="buttons">
+            <input type="submit" class="aui-button aui-button-primary submit" id="postprocessFormSubmitButton" value="Import" /> 
+            <div class="description">Import may take longer, be patient please, do not resubmit!</div>
+        </div>
+        </div>
+     </form>            
+	      <p>
+	      <b>Steps after import</b> - IT IS NECESSARY TO CHECK WHOLE DOCUMENT CONTENT AFTER IMPORT. Be careful mainly around these points: 
+	      <ul>
+	        <li>special wiki syntax characters <code>*+-_[](){}</code> etc. are escaped with backslash during import (only outside <code>code</code> and <code>noformat</code> macros), but check it please.
+	        <li>confluence wiki syntax doesn't allow formating inside <code>code</code> and <code>noformat</code> macros but DocBook allows it. So check content of <code>code</code> and <code>noformat</code> macros to check if correct because we remove all formating tags here and leave only text during import. 
+	        <li>tables - checks all rows and cells, sometimes formatting in cell may break table (because adds unwanted row separator in cell or so).
+	        <li>tables - table inside table cell not supported very well in confluence. We use <code>panel</code> to wrap it but output to the docbook may not be very accurate. Try to remove these structures please.
+	        <li>ordered and unordered lists - sometimes unnecessary row is added so lists doesn't tie together and number sequences are broken.
+	        <li>DocBook <code>procedure</code> structure is rather complicated, we try to import it as ordered list, but check it and reformat it if necessary
+	        <li>DocBook <code>variablelist</code> structure is rather complicated, we try to import it as unordered list, but check it and reformat it if necessary
+	        <li>cross-references within the book - correctly handled only references pointing to chapters and first level sections. References pointing to deeper sections or other content blocks (figures, tasks, procedures, etc.) stay incorrect in Confluence pointing to original id from DocBook xml file. You need to solve them manually by some appropriate way (pointing it to some existing page in Confluence, or breaking this page to smaller subpages and pointing reference to subpage for better granularity). 
+	        <li>DocBook defines many elements which has no representation in Confluence. Only text content from these elements is leaved in Confluence. Small subset of these elements is converted to monospaced or preformated text.     
+	      </ul>        
+    </div>
     </td>
     <td valign="top">
+    <div class="aui-item">
       Use this screen to import DocBook xml structure placed in zip file into Confluence.
       <p> 
       <b>Imported <code>book</code> is added as subpage for currently selected confluence Page, so use it mainly on Space root Page!</b>. 
       All <code>chapter</code> and <code>appendix</code> elements in <code>book</code> are then imported as subpages for this main book page.
-      All first level <code>section</code>s in <code>chapter</code>s and <code>appendix</code>es are imported as subpages in appropriate page. 
+      All or only first level of <code>section</code>s in <code>chapter</code>s and <code>appendix</code>es are imported as subpages in appropriate page depending on import configuration. 
       <p><b>ZIP file content</b> - Zip file must directly (not in subdirectory) contain DocBook xml file with <code>book</code> root element. Name of this file may vary, but only one file with <code>book</code> root element should be here (if more is here then imported one is selected randomly).<br>
       DocBook xml processing is <code>XInclude</code> aware during import. <br>
       Zip file must contain all relatively referenced resources (XIncluded xml files, images etc.) in correct relative paths, exception is <code>Common_Content/</code> which is evaluated by import tool automatically (this directory doesn't need to be in zip file).
@@ -97,7 +86,7 @@
         <li>DocBook import tool loads necessary DocBook DTD/XSD/ent files from internet if referenced absolutely in DOCTYPE (eg. from http://www.oasis-open.org for 4.3) and caches them in memory for better performance. So we are not dependent on some concrete DocBook version, but files must be available on internet and correctly defined in imported xml files.
         <li>Error messages from parsing xml files included over <code>XInclude</code> are not too descriptive: <code>Error attempting to parse XML file (href='chapter-Introduction.xml').</code>. So rather hard to find problem cause in this cases :-(
       </ul>
-       
+    </div>   
     </td>
   </tr>
 </table>  
