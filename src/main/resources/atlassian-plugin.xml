@@ -5,7 +5,7 @@
     <version>${project.version}</version>
     <vendor name="${project.organization.name}" url="${project.organization.url}" />
     <param name="atlassian-data-center-compatible">true</param>
-    <application-version min="5.0" />
+    <application-version min="5.7" />
     <bundle-instructions>
       <Export-Package>org.jboss.confluence.plugin.docbook_tools.docbookimport</Export-Package>
     </bundle-instructions>

@@ -42,6 +42,8 @@ import org.jboss.confluence.plugin.docbook_tools.utils.ConfluenceUtils;
 import org.jboss.confluence.plugin.docbook_tools.utils.FileUtils;
 import org.springframework.web.util.HtmlUtils;
 
+import com.atlassian.confluence.core.BodyContent;
+import com.atlassian.confluence.core.BodyType;
 import com.atlassian.confluence.labels.Label;
 import com.atlassian.confluence.labels.LabelManager;
 import com.atlassian.confluence.labels.Labelable;
@@ -335,7 +337,8 @@ public class DocbookImportAction extends PageAvareActionBase {
 		for (DocStructureItem chapterInfo : docToImport.getChilds()) {
 			Page chapterPage = preparePageObjectBase(chapterInfo, rootPage);
 			chapterPage.setPosition(chapterPosition++);
-			chapterPage.setContent(importer.prepareNodeWIKIContent(docBookFileToImport, chapterInfo, docbookVersion));
+			BodyContent bc = new BodyContent(chapterPage, importer.prepareNodeWIKIContent(docBookFileToImport, chapterInfo, docbookVersion), BodyType.WIKI);
+			chapterPage.setBodyContent(bc);
 			importPageAttachments(chapterInfo, workDir, chapterPage);
 
 			// import subpages recursively

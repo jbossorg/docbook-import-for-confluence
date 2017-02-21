@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.labs.confluence.plugin</groupId>
     <artifactId>docbook_import</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <packaging>atlassian-plugin</packaging>
 
     <name>DocBook Import for Confluence</name>
@@ -55,8 +55,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <conf.version>5.0</conf.version>
-    <conf.data.version>5.0</conf.data.version>
+    <conf.version>5.9.1</conf.version>
+    <conf.data.version>5.8</conf.data.version>
     <java.version>1.7</java.version>
     <atlassian.plugin.version>3.1.3</atlassian.plugin.version>
   </properties>
@@ -82,21 +82,15 @@
       <version>4.6</version>
       <scope>test</scope>
     </dependency>
-  </dependencies> 
-  
-  <dependencyManagement>
-    <dependencies>
-      
-      <dependency>
+    
+    <dependency>
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
           <version>2.4</version>
           <scope>provided</scope>
       </dependency>
-    </dependencies>
-  </dependencyManagement>
-       
-
+  </dependencies> 
+  
   <build>
     <plugins>
       <plugin>

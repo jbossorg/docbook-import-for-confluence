@@ -511,7 +511,7 @@ public class DocbookImporter_DocBook_5_0_Test extends DocbookImporterTestBase {
   @Test
   public void completeParsingTest() throws Exception {
 
-    boolean internal = true;
+    boolean internal = false;
 
     File srcdir = null;
     File inFile = null;
@@ -520,8 +520,10 @@ public class DocbookImporter_DocBook_5_0_Test extends DocbookImporterTestBase {
       srcdir = prepareTestSourceDirectory("docbook-5.0-ok.zip");
       inFile = new File(srcdir, "Tree_Cache_Guide.xml");
     } else {
-      srcdir = new File("/home/velias/Tmp/Scroll_NewVersion/extracted");
-      inFile = new File(srcdir, "docbook.xml");
+      //srcdir = new File("/home/velias/Tmp/Scroll_NewVersion/extracted");
+      //inFile = new File(srcdir, "docbook.xml");
+      srcdir = new File("/home/velias/Temp/docbook-test");
+      inFile = new File(srcdir, "viz-engine-guide.xml");
     }
 
     try {

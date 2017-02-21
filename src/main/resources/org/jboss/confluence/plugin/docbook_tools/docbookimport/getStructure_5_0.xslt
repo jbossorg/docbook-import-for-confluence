@@ -39,6 +39,7 @@
     <type><xsl:text>book</xsl:text></type>
     <xsl:if test="d:bookinfo/d:title"><title><xsl:value-of select="d:bookinfo/d:title" /></title></xsl:if>
     <xsl:if test="d:info/d:title"><title><xsl:value-of select="d:info/d:title" /></title></xsl:if>
+    <xsl:if test="d:title"><title><xsl:value-of select="d:title" /></title></xsl:if>
     <xsl:apply-templates select="d:chapter" />
     <xsl:apply-templates select="d:appendix" />
   </node>  
