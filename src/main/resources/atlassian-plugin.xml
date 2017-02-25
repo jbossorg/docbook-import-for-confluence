@@ -5,11 +5,13 @@
     <version>${project.version}</version>
     <vendor name="${project.organization.name}" url="${project.organization.url}" />
     <param name="atlassian-data-center-compatible">true</param>
-    <application-version min="5.7" />
+    <application-version min="5.0" />
     <bundle-instructions>
       <Export-Package>org.jboss.confluence.plugin.docbook_tools.docbookimport</Export-Package>
     </bundle-instructions>
   </plugin-info>
+  
+  <component-import key="xhtmlContent" interface="com.atlassian.confluence.xhtml.api.XhtmlContent"/>
   
   <resource type="i18n" name="plugin" location="org.jboss.confluence.plugin.docbook_tools.docbookimport.plugin_messages"/>
   

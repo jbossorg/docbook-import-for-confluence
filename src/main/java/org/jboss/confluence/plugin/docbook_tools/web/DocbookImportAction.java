@@ -42,6 +42,7 @@ import org.jboss.confluence.plugin.docbook_tools.utils.ConfluenceUtils;
 import org.jboss.confluence.plugin.docbook_tools.utils.FileUtils;
 import org.springframework.web.util.HtmlUtils;
 
+import com.atlassian.confluence.content.render.xhtml.DefaultConversionContext;
 import com.atlassian.confluence.core.BodyContent;
 import com.atlassian.confluence.core.BodyType;
 import com.atlassian.confluence.labels.Label;
@@ -52,14 +53,15 @@ import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.confluence.pages.Page;
 import com.atlassian.confluence.pages.PageManager;
+import com.atlassian.confluence.xhtml.api.XhtmlContent;
 import com.atlassian.spring.container.ContainerManager;
 import com.opensymphony.webwork.ServletActionContext;
 import com.opensymphony.webwork.dispatcher.multipart.MultiPartRequestWrapper;
 
 /**
- * Web Action used to import DocBook xml in JBoss Documentation form to Confluence.
+ * Web Action used to import DocBook xml into Confluence.
  * 
- * @author Vlastimil Elias (velias at redhat dot com) (C) 2011 Red Hat Inc.
+ * @author Vlastimil Elias (velias at redhat dot com) (C) 2011-2017 Red Hat Inc.
  * @see DocbookImporter
  */
 public class DocbookImportAction extends PageAvareActionBase {
@@ -77,6 +79,8 @@ public class DocbookImportAction extends PageAvareActionBase {
 	private String docbookver;
 
 	private String allSectionLevels;
+	
+	private final XhtmlContent xhtmlContent;
 
 	private static MimetypesFileTypeMap mtftm = new MimetypesFileTypeMap();
 	static {
@@ -96,6 +100,7 @@ public class DocbookImportAction extends PageAvareActionBase {
 		logger.debug("constructor called");
 		pageManager = (PageManager) ContainerManager.getComponent("pageManager");
 		labelManager = (LabelManager) ContainerManager.getComponent("labelManager");
+		xhtmlContent = (XhtmlContent) ContainerManager.getComponent("xhtmlContent");
 	}
 
 	/**
@@ -337,7 +342,13 @@ public class DocbookImportAction extends PageAvareActionBase {
 		for (DocStructureItem chapterInfo : docToImport.getChilds()) {
 			Page chapterPage = preparePageObjectBase(chapterInfo, rootPage);
 			chapterPage.setPosition(chapterPosition++);
-			BodyContent bc = new BodyContent(chapterPage, importer.prepareNodeWIKIContent(docBookFileToImport, chapterInfo, docbookVersion), BodyType.WIKI);
+			
+			String wikiContent = importer.prepareNodeWIKIContent(docBookFileToImport, chapterInfo, docbookVersion);
+			List<RuntimeException> conversionErrors = new ArrayList<>();
+            BodyContent bc = new BodyContent(chapterPage, xhtmlContent.convertWikiToStorage(wikiContent, new DefaultConversionContext( chapterPage.toPageContext()), conversionErrors ), BodyType.XHTML);
+            if(!conversionErrors.isEmpty()){
+                logger.warn("Errors from wiki content conversion during DocBook import: " + conversionErrors);
+            }
 			chapterPage.setBodyContent(bc);
 			importPageAttachments(chapterInfo, workDir, chapterPage);
 

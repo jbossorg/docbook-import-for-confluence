@@ -1,6 +1,9 @@
 "DocBook Import for Confluence" plugin changelog
 ==============================================================
 
+2.1.1
+- added conversion of imported content from WIKI to XHTML storage format to be editable (bug from 2.1.0)
+
 2.1.0
 - updated to Confluence 5.7+ (backward compatible from 5.0+)
 
