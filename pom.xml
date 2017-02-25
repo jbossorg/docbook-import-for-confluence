@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.labs.confluence.plugin</groupId>
     <artifactId>docbook_import</artifactId>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
     <packaging>atlassian-plugin</packaging>
 
     <name>DocBook Import for Confluence</name>

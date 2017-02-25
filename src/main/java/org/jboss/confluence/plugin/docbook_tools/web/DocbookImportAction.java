@@ -323,6 +323,7 @@ public class DocbookImportAction extends PageAvareActionBase {
 		page.setTitle(title);
 		page.setSpace(getSpace());
 		page.setParentPage(parentPage);
+		page.setCreator(getAuthenticatedUser());
 		parentPage.addChild(page);
 		return page;
 	}
