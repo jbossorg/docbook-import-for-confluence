@@ -511,7 +511,7 @@ public class DocbookImporter_DocBook_5_0_Test extends DocbookImporterTestBase {
   @Test
   public void completeParsingTest() throws Exception {
 
-    boolean internal = false;
+    boolean internal = true;
 
     File srcdir = null;
     File inFile = null;
